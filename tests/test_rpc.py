@@ -23,9 +23,6 @@ class OdooTestCaseBase(unittest.TestCase):
             port=80
         )
 
-        # Check available databases
-        print(self.odoo.db.list())
-
         self.odoo.login(
             'chocotech',
             'demo',
@@ -38,9 +35,17 @@ class CustomerTestCase(OdooTestCaseBase):
     Testes para o serviço Customer
     """
 
-    def test_customer(self):
+    def test_count_all_customers(self):
+
+        Customer = self.odoo.env['res.partner']
+
+        total = Customer.search_count([])
+
+        print 'Total de clientes {}\n'.format(
+            total
+        )
 
         self.assertEqual(
-            1,
-            1
+            total,
+            75
         )
