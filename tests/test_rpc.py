@@ -38,7 +38,36 @@ class CustomerTestCase(OdooTestCaseBase):
     Testes para o serviço Customer
     """
 
-    def test_customer(self):
+    def test_sales_percent_closed(self):
+
+        Order = self.odoo.env['sale.order']
+
+        orders_budgets = Order.search(
+            [
+                '|',
+                ('state', '=', 'sent'),
+                ('state', '=', 'draft')
+            ],
+            count=True
+        )
+
+        orders_sales = Order.search(
+            [
+                ['state', '=', 'sale']
+            ],
+            count=True
+        )
+
+        total = orders_budgets + orders_sales
+
+        percent = (float(orders_sales) * 100) / total
+
+        print 'Cotações: {0}, Vendas condirmadas: {1}, Total: {2}, porcentagem {3:.2f} %'.format(
+            orders_budgets,
+            orders_sales,
+            total,
+            percent
+        )
 
         self.assertEqual(
             1,
