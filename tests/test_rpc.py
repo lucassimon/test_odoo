@@ -70,6 +70,15 @@ class CustomerTestCase(OdooTestCaseBase):
                 order.amount_total
             )
 
+            for item in order.order_line:
+
+                print '{} => Quantidade: {} * $ {} = $ {} bruto'.format(
+                    item.name,
+                    item.product_uom_qty,
+                    item.price_unit,
+                    item.valor_bruto
+                )
+
         self.assertEqual(
             1,
             1
