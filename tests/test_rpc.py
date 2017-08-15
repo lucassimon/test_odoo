@@ -38,7 +38,37 @@ class CustomerTestCase(OdooTestCaseBase):
     Testes para o serviço Customer
     """
 
-    def test_customer(self):
+    def test_get_biggest_sale(self):
+
+        Order = self.odoo.env['sale.order']
+
+        # orders = Order.search_read(
+        #     [
+        #         ['state', '=', 'sale'],
+        #     ],
+        #     ['partner_id', 'amount_total'],
+        #     limit=1,
+        #     order='amount_total desc'
+        # )
+
+        orders = Order.search(
+            [
+                ['state', '=', 'sale']
+            ],
+            offset=0,
+            limit=1,
+            order='amount_total desc'
+        )
+
+        for ids in orders:
+
+            order = Order.browse(ids)
+
+            print '{} -> {}: $ {}'.format(
+                ids,
+                order.partner_id.name,
+                order.amount_total
+            )
 
         self.assertEqual(
             1,
