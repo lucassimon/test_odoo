@@ -38,7 +38,35 @@ class CustomerTestCase(OdooTestCaseBase):
     Testes para o serviço Customer
     """
 
-    def test_customer(self):
+    def test_get_ten_customer_order__name_asc(self):
+        """
+        Listar os 10 primeiros clientes
+        por ordem alfabética (Nome e Cidade que mora)
+        """
+
+        Customer = self.odoo.env['res.partner']
+
+        customers = Customer.search_read(
+            [],
+            ['name', 'country_id'],
+            order='name',
+            limit=10
+        )
+
+        for customer in customers:
+
+            if not customer.get('customer_id'):
+
+                city = None
+            else:
+
+                city = customer.get('customer_id')[1]
+
+            print '{}: {} -> {}'.format(
+                customer.get('id'),
+                customer.get('name'),
+                city
+            )
 
         self.assertEqual(
             1,
