@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import sys
+
 import odoorpc
 
 import pytest
@@ -23,9 +25,6 @@ class OdooTestCaseBase(unittest.TestCase):
             port=80
         )
 
-        # Check available databases
-        print(self.odoo.db.list())
-
         self.odoo.login(
             'chocotech',
             'demo',
@@ -38,9 +37,44 @@ class CustomerTestCase(OdooTestCaseBase):
     Testes para o serviço Customer
     """
 
-    def test_customer(self):
+    def test_add_customer(self):
+        """
+        Inserir um cliente no Odoo via api,
+        com os seus dados (Nome, email, telefone, cep)
+        """
+
+        Customer = self.odoo.env['res.partner']
+
+        email = self.fake.email()
+
+        customer_id = Customer.create(
+            {
+                'name': self.fake.name(),
+                'email': email,
+                'phone': self.fake.phone_number(),
+                'zip': self.fake.postcode()
+            }
+        )
+
+        customer = Customer.browse(customer_id)
 
         self.assertEqual(
-            1,
-            1
+            customer.email,
+            email
+        )
+
+        # item 02 atualiza cliente
+
+        rg = self.fake.ssn()
+
+        customer.rg_fisica = rg
+
+        print 'Cliente criado com o emial: {} -> {}\n'.format(
+            customer.email,
+            customer.rg_fisica
+        )
+
+        self.assertEqual(
+            customer.rg_fisica,
+            rg
         )
