@@ -16,6 +16,8 @@ class OdooTestCaseBase(unittest.TestCase):
 
     def setUp(self):
 
+        self.customer_id = 0
+
         self.fake = Factory.create('pt_BR')
         # Prepare the connection to the server
         self.odoo = odoorpc.ODOO(
@@ -38,9 +40,28 @@ class CustomerTestCase(OdooTestCaseBase):
     Testes para o serviço Customer
     """
 
-    def test_customer(self):
+    def test_add_customer(self):
+        """
+        Inserir um cliente no Odoo via api,
+        com os seus dados (Nome, email, telefone, cep)
+        """
+
+        Customer = self.odoo.env['res.partner']
+
+        email = self.fake.email()
+
+        self.customer_id = Customer.create(
+            {
+                'name': self.fake.name(),
+                'email': email,
+                'phone': self.fake.phone_number(),
+                'zip': self.fake.postcode()
+            }
+        )
+
+        customer = Customer.browse(self.customer_id)
 
         self.assertEqual(
-            1,
-            1
+            customer.email,
+            email
         )
